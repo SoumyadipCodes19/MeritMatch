@@ -713,10 +713,14 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
     // Build HTML
     let html = '';
     data.forEach((d, i) => {
-      const r1Str = d.r1_cutoff !== null ? d.r1_cutoff.toFixed(2) : '—';
-      const r3Str = d.r3_cutoff !== null ? d.r3_cutoff.toFixed(2) : '—';
-      const spotStr = d.spot_cutoff !== null ? d.spot_cutoff.toFixed(2) : '—';
-      const diffStr = d.diff !== null ? (d.diff > 0 ? '+' : '') + d.diff.toFixed(2) : '—';
+      const cat = inpCategory.value;
+      const c_r1 = (d.cutoffs && d.cutoffs[cat]) ? d.cutoffs[cat].r1 : null;
+      const c_r3 = (d.cutoffs && d.cutoffs[cat]) ? d.cutoffs[cat].r3 : null;
+      const c_spot = (d.cutoffs && d.cutoffs[cat]) ? d.cutoffs[cat].spot : null;
+      const r1Str = c_r1 !== null ? c_r1.toFixed(2) : '-';
+      const r3Str = c_r3 !== null ? c_r3.toFixed(2) : '-';
+      const spotStr = c_spot !== null ? c_spot.toFixed(2) : '-';
+      const diffStr = d.diff !== null ? (d.diff > 0 ? '+' : '') + d.diff.toFixed(2) : '-';
       html += `<tr>
         <td>${i + 1}</td>
         <td class="col-college">${d.college}</td>
