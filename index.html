@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeritMatch DU — DU Cutoff & College Predictor 2024-25</title>
+<meta name="description" content="Predict your Delhi University college admission chances based on CUET 2024-25 scores. Compare cutoffs across Round 1, Round 3 & Spot Round for 551+ college-course combinations.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0a0e1a;--bg-secondary:#111827;--bg-card:rgba(17,24,39,0.7);
+  --glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.08);
+  --text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;
+  --accent-blue:#3b82f6;--accent-purple:#8b5cf6;--accent-teal:#14b8a6;
+  --accent-pink:#ec4899;
+  --green-dark:#1B5E20;--green:#388E3C;--amber:#F9A825;--orange:#E65100;--red:#B71C1C;--gray:#616161;
+  --north:#3b82f6;--south:#f59e0b;--off:#a855f7;
+  --radius:12px;--radius-sm:8px;--radius-lg:16px;
+  --shadow:0 4px 30px rgba(0,0,0,0.3);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+.container{max-width:1400px;margin:0 auto;padding:0 20px}
+
+/* Hero */
+.hero{position:relative;padding:60px 0 40px;text-align:center;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg at 50% 50%,#0a0e1a,#1e1b4b,#0f172a,#164e63,#0a0e1a);animation:heroRotate 20s linear infinite;opacity:0.4}
+@keyframes heroRotate{to{transform:rotate(360deg)}}
+.hero-content{position:relative;z-index:1}
+.hero h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;background:linear-gradient(135deg,#60a5fa,#a78bfa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;letter-spacing:-1px}
+.hero .subtitle{font-size:clamp(0.875rem,2vw,1.1rem);color:var(--text-secondary);font-weight:400;max-width:600px;margin:0 auto}
+.hero .badge{display:inline-block;margin-top:16px;padding:6px 16px;border-radius:20px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:#818cf8;font-size:0.8rem;font-weight:500}
+
+/* Score Input Section */
+.score-section{padding:40px 0}
+.section-title{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:8px}
+.section-subtitle{text-align:center;color:var(--text-secondary);margin-bottom:32px;font-size:0.9rem}
+.input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:960px;margin:0 auto 32px}
+.input-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px;text-align:center;transition:all 0.3s ease}
+.input-card:hover{border-color:rgba(99,102,241,0.4);transform:translateY(-2px);box-shadow:0 8px 32px rgba(99,102,241,0.1)}
+.input-card label{display:block;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:8px}
+.input-card .subject-icon{font-size:1.5rem;margin-bottom:6px}
+.input-card input{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:12px;font-size:1.3rem;font-weight:700;color:var(--text-primary);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:border 0.3s}
+.input-card input:focus{border-color:var(--accent-blue);box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+.input-card input::placeholder{color:var(--text-muted);font-weight:400;font-size:0.9rem}
+.input-card .max-label{font-size:0.7rem;color:var(--text-muted);margin-top:6px}
+
+/* Computed Scores */
+.computed-scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;max-width:760px;margin:0 auto 32px}
+.score-card{background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(139,92,246,0.1));border:1px solid rgba(99,102,241,0.2);border-radius:var(--radius);padding:16px;text-align:center;transition:all 0.3s}
+.score-card.type1{border-color:rgba(16,185,129,0.3);background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(20,184,166,0.08))}
+.score-card.type2{border-color:rgba(20,184,166,0.3);background:linear-gradient(135deg,rgba(20,184,166,0.08),rgba(59,130,246,0.08))}
+.score-card.type3{border-color:rgba(245,158,11,0.3);background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(234,88,12,0.08))}
+.score-card.type4{border-color:rgba(59,130,246,0.3);background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(99,102,241,0.08))}
+.score-card.type5{border-color:rgba(168,85,247,0.3);background:linear-gradient(135deg,rgba(168,85,247,0.08),rgba(139,92,246,0.08))}
+.score-card.type6{border-color:rgba(236,72,153,0.3);background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(244,63,94,0.08))}
+.score-card .score-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:4px}
+.score-card .score-formula{font-size:0.65rem;color:var(--text-muted);margin-bottom:8px}
+.score-card .score-value{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.score-card.type1 .score-value{background:linear-gradient(135deg,#34d399,#14b8a6);-webkit-background-clip:text;background-clip:text}
+.score-card.type2 .score-value{background:linear-gradient(135deg,#2dd4bf,#38bdf8);-webkit-background-clip:text;background-clip:text}
+.score-card.type3 .score-value{background:linear-gradient(135deg,#fcd34d,#fb923c);-webkit-background-clip:text;background-clip:text}
+.score-card.type4 .score-value{background:linear-gradient(135deg,#60a5fa,#3b82f6);-webkit-background-clip:text;background-clip:text}
+.score-card.type5 .score-value{background:linear-gradient(135deg,#c084fc,#8b5cf6);-webkit-background-clip:text;background-clip:text}
+.score-card.type6 .score-value{background:linear-gradient(135deg,#f472b6,#ec4899);-webkit-background-clip:text;background-clip:text}
+
+/* Predict Button */
+.predict-btn-wrap{text-align:center;margin-bottom:20px}
+.predict-btn{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;border:none;padding:14px 48px;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 20px rgba(99,102,241,0.3);letter-spacing:0.5px;position:relative;overflow:hidden}
+.predict-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,0.4)}
+.predict-btn:active{transform:translateY(0)}
+.predict-btn::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,0.2);border-radius:50%;transform:translate(-50%,-50%);transition:width 0.4s,height 0.4s}
+.predict-btn:active::after{width:300px;height:300px}
+
+/* Results Area */
+.results-area{display:none;padding:20px 0 60px;animation:fadeInUp 0.6s ease}
+.results-area.visible{display:block}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* Filters */
+.filters{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px}
+.filters-title{font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:16px}
+.filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.filter-group{position:relative}
+.filter-group>label{display:block;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px}
+.filter-group select,.filter-group input[type="text"]{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:10px 12px;font-size:0.85rem;color:var(--text-primary);font-family:'Inter',sans-serif;outline:none;transition:border 0.3s;appearance:none;-webkit-appearance:none}
+.filter-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.filter-group select:focus,.filter-group input[type="text"]:focus{border-color:var(--accent-blue)}
+.filter-group select option{background:#1e293b;color:#f1f5f9}
+
+/* Multi-select dropdown */
+.ms-trigger{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:10px 32px 10px 12px;font-size:0.85rem;color:var(--text-primary);font-family:'Inter',sans-serif;cursor:pointer;transition:border 0.3s;position:relative;text-align:left;min-height:40px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;user-select:none}
+.ms-trigger:hover,.ms-trigger.active{border-color:var(--accent-blue)}
+.ms-trigger::after{content:'';position:absolute;right:12px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--text-muted);transition:transform 0.2s}
+.ms-trigger.active::after{transform:translateY(-50%) rotate(180deg)}
+.ms-placeholder{color:var(--text-muted)}
+.ms-chip{display:inline-flex;align-items:center;background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);border-radius:12px;padding:2px 8px;font-size:0.7rem;font-weight:600;color:#a5b4fc;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.ms-chip-more{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.15);color:var(--text-secondary)}
+.ms-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#1e293b;border:1px solid rgba(99,102,241,0.3);border-radius:var(--radius-sm);box-shadow:0 12px 40px rgba(0,0,0,0.5);z-index:50;display:none;max-height:280px;overflow:hidden;flex-direction:column}
+.ms-dropdown.open{display:flex}
+.ms-search{padding:8px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ms-search input{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:0.8rem;color:var(--text-primary);font-family:'Inter',sans-serif;outline:none}
+.ms-search input:focus{border-color:rgba(99,102,241,0.4)}
+.ms-search input::placeholder{color:var(--text-muted)}
+.ms-actions{display:flex;gap:4px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ms-actions button{flex:1;padding:4px 8px;font-size:0.68rem;font-weight:600;font-family:'Inter',sans-serif;border:1px solid rgba(255,255,255,0.1);border-radius:4px;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.05);color:var(--text-secondary)}
+.ms-actions button:hover{background:rgba(99,102,241,0.2);color:#a5b4fc;border-color:rgba(99,102,241,0.3)}
+.ms-options{overflow-y:auto;flex:1}
+.ms-option{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;transition:background 0.15s;font-size:0.82rem;color:var(--text-secondary)}
+.ms-option:hover{background:rgba(99,102,241,0.1)}
+.ms-option.selected{background:rgba(99,102,241,0.08);color:var(--text-primary)}
+.ms-check{width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.ms-option.selected .ms-check{background:var(--accent-blue);border-color:var(--accent-blue)}
+.ms-option.selected .ms-check::after{content:'✓';font-size:10px;color:#fff;font-weight:700}
+.ms-option-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Summary Cards */
+.summary-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+.summary-card{border-radius:var(--radius);padding:16px;text-align:center;border:1px solid rgba(255,255,255,0.05);transition:transform 0.3s}
+.summary-card:hover{transform:translateY(-3px)}
+.summary-card .count{font-size:2rem;font-weight:800;margin-bottom:2px}
+.summary-card .label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0.9}
+.sc-vsafe{background:linear-gradient(135deg,rgba(27,94,32,0.4),rgba(27,94,32,0.15));color:#a5d6a7}
+.sc-safe{background:linear-gradient(135deg,rgba(56,142,60,0.4),rgba(56,142,60,0.15));color:#c8e6c9}
+.sc-border{background:linear-gradient(135deg,rgba(249,168,37,0.4),rgba(249,168,37,0.15));color:#fff9c4}
+.sc-risky{background:linear-gradient(135deg,rgba(230,81,0,0.4),rgba(230,81,0,0.15));color:#ffe0b2}
+.sc-vrisky{background:linear-gradient(135deg,rgba(183,28,28,0.4),rgba(183,28,28,0.15));color:#ffcdd2}
+.sc-vacant{background:linear-gradient(135deg,rgba(97,97,97,0.4),rgba(97,97,97,0.15));color:#e0e0e0}
+
+/* Results Count */
+.results-count{font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px}
+.results-count span{font-weight:700;color:var(--accent-blue)}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--glass-border);background:var(--bg-card);backdrop-filter:blur(10px)}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead{position:sticky;top:0;z-index:10}
+thead th{background:linear-gradient(135deg,#1e293b,#1e1b4b);color:var(--text-primary);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;padding:14px 10px;text-align:left;border-bottom:2px solid rgba(99,102,241,0.3);white-space:nowrap}
+thead th:first-child{text-align:center;width:50px}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.03);transition:background 0.2s}
+tbody tr:nth-child(even){background:rgba(255,255,255,0.015)}
+tbody tr:hover{background:rgba(99,102,241,0.08)}
+tbody td{padding:10px;font-size:0.82rem;color:var(--text-secondary);vertical-align:middle}
+tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);font-size:0.75rem}
+.col-college{font-weight:600;color:var(--text-primary);min-width:200px}
+.col-course{color:#cbd5e1;min-width:180px}
+.col-num{text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* Badges */
+.badge-campus{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.badge-north{background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.3)}
+.badge-south{background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.3)}
+.badge-off{background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.3)}
+.badge-merit{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;letter-spacing:0.5px}
+.merit-Type1{background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3)}
+.merit-Type2{background:rgba(20,184,166,0.15);color:#2dd4bf;border:1px solid rgba(20,184,166,0.3)}
+.merit-Type3{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3)}
+.merit-Type4{background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.3)}
+.merit-Type5{background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.3)}
+.merit-Type6{background:rgba(236,72,153,0.15);color:#f472b6;border:1px solid rgba(236,72,153,0.3)}
+
+.badge-remark{display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;white-space:nowrap}
+.remark-vsafe{background:#1B5E20;color:#fff}
+.remark-safe{background:#388E3C;color:#fff}
+.remark-border{background:#F9A825;color:#000}
+.remark-risky{background:#E65100;color:#fff}
+.remark-vrisky{background:#B71C1C;color:#fff}
+.remark-vacant{background:#616161;color:#fff}
+
+.diff-positive{color:#ef4444}
+.diff-negative{color:#22c55e}
+.diff-zero{color:#fbbf24}
+.diff-vacant{color:#9ca3af}
+
+/* Footer */
+.footer{text-align:center;padding:40px 20px;border-top:1px solid var(--glass-border);margin-top:40px}
+.footer p{font-size:0.8rem;color:var(--text-muted);margin-bottom:4px}
+.footer .heart{color:#ef4444}
+
+/* Scroll to top */
+.scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border:none;color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;transition:all 0.3s;box-shadow:0 4px 15px rgba(99,102,241,0.3);z-index:100;display:flex;align-items:center;justify-content:center}
+.scroll-top.visible{opacity:1}
+.scroll-top:hover{transform:translateY(-3px)}
+
+/* Responsive */
+@media(max-width:768px){
+  .hero{padding:40px 0 24px}
+  .hero h1{font-size:1.8rem}
+  .input-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .computed-scores{grid-template-columns:repeat(2,1fr);gap:10px}
+  .filter-grid{grid-template-columns:1fr 1fr}
+  .summary-cards{grid-template-columns:repeat(3,1fr);gap:8px}
+  .summary-card .count{font-size:1.4rem}
+  .filters{padding:16px}
+}
+@media(max-width:480px){
+  .input-grid{grid-template-columns:1fr 1fr}
+  .computed-scores{grid-template-columns:1fr 1fr}
+  .filter-grid{grid-template-columns:1fr}
+  .summary-cards{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content container">
+    <h1>MeritMatch DU</h1>
+    <p class="subtitle">DU Cutoff & College Predictor — Based on 2024-25 CUET Cutoff Data</p>
+    <span class="badge">Round 1 · Round 3 · Spot Round — 551 College-Course Combinations</span>
+  </div>
+</section>
+
+<!-- Score Input -->
+<section class="score-section container">
+  <h2 class="section-title">Enter Your CUET Scores</h2>
+  <p class="section-subtitle">Input your NTA scores for each subject (0–250)</p>
+  
+  <div class="input-grid">
+    <div class="input-card">
+      <div class="subject-icon">⚡</div>
+      <label>Physics (P)</label>
+      <input type="number" id="inp-physics" min="0" max="250" step="0.01" placeholder="0.00">
+      <div class="max-label">Max: 250</div>
+    </div>
+    <div class="input-card">
+      <div class="subject-icon">🧪</div>
+      <label>Chemistry (C)</label>
+      <input type="number" id="inp-chemistry" min="0" max="250" step="0.01" placeholder="0.00">
+      <div class="max-label">Max: 250</div>
+    </div>
+    <div class="input-card">
+      <div class="subject-icon">🧬</div>
+      <label>Biology (B)</label>
+      <input type="number" id="inp-biology" min="0" max="250" step="0.01" placeholder="0.00">
+      <div class="max-label">Max: 250</div>
+    </div>
+    <div class="input-card">
+      <div class="subject-icon">📐</div>
+      <label>Maths (M)</label>
+      <input type="number" id="inp-maths" min="0" max="250" step="0.01" placeholder="0.00">
+      <div class="max-label">Max: 250</div>
+    </div>
+    <div class="input-card">
+      <div class="subject-icon">📝</div>
+      <label>English (E)</label>
+      <input type="number" id="inp-english" min="0" max="250" step="0.01" placeholder="0.00">
+      <div class="max-label">Max: 250</div>
+    </div>
+  </div>
+
+  <div class="computed-scores">
+    <div class="score-card type1">
+      <div class="score-label">Type 1 Score</div>
+      <div class="score-formula">PCB</div>
+      <div class="score-value" id="score-type1">0</div>
+    </div>
+    <div class="score-card type2">
+      <div class="score-label">Type 2 Score</div>
+      <div class="score-formula">PC+max(M,B)</div>
+      <div class="score-value" id="score-type2">0</div>
+    </div>
+    <div class="score-card type3">
+      <div class="score-label">Type 3 Score</div>
+      <div class="score-formula">BM+max(P,C)</div>
+      <div class="score-value" id="score-type3">0</div>
+    </div>
+    <div class="score-card type4">
+      <div class="score-label">Type 4 Score</div>
+      <div class="score-formula">PCM</div>
+      <div class="score-value" id="score-type4">0</div>
+    </div>
+    <div class="score-card type5">
+      <div class="score-label">Type 5 Score</div>
+      <div class="score-formula">EM+ 2 max(P,C,B)</div>
+      <div class="score-value" id="score-type5">0</div>
+    </div>
+    <div class="score-card type6">
+      <div class="score-label">Type 6 Score</div>
+      <div class="score-formula">E+3 max(P,C,M,B)</div>
+      <div class="score-value" id="score-type6">0</div>
+    </div>
+  </div>
+
+  <div class="predict-btn-wrap">
+    <button class="predict-btn" id="predict-btn">🎯 Predict My Colleges</button>
+  </div>
+</section>
+
+<!-- Results -->
+<section class="results-area" id="results-area">
+  <div class="container">
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filters-title">🔍 Filter & Search Results</div>
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label>Search</label>
+          <input type="text" id="f-search" placeholder="Search college or course...">
+        </div>
+        <div class="filter-group" id="ms-course-wrap">
+          <label>Course</label>
+          <div class="ms-trigger" data-ms="course"><span class="ms-placeholder">All Courses</span></div>
+          <div class="ms-dropdown" data-ms="course">
+            <div class="ms-search"><input type="text" placeholder="Search courses..."></div>
+            <div class="ms-actions"><button data-action="all">Select All</button><button data-action="none">Clear All</button></div>
+            <div class="ms-options"></div>
+          </div>
+        </div>
+        <div class="filter-group" id="ms-college-wrap">
+          <label>College</label>
+          <div class="ms-trigger" data-ms="college"><span class="ms-placeholder">All Colleges</span></div>
+          <div class="ms-dropdown" data-ms="college">
+            <div class="ms-search"><input type="text" placeholder="Search colleges..."></div>
+            <div class="ms-actions"><button data-action="all">Select All</button><button data-action="none">Clear All</button></div>
+            <div class="ms-options"></div>
+          </div>
+        </div>
+        <div class="filter-group" id="ms-campus-wrap">
+          <label>Campus</label>
+          <div class="ms-trigger" data-ms="campus"><span class="ms-placeholder">All Campuses</span></div>
+          <div class="ms-dropdown" data-ms="campus">
+            <div class="ms-actions"><button data-action="all">Select All</button><button data-action="none">Clear All</button></div>
+            <div class="ms-options"></div>
+          </div>
+        </div>
+        <div class="filter-group" id="ms-merit-wrap">
+          <label>Merit Type</label>
+          <div class="ms-trigger" data-ms="merit"><span class="ms-placeholder">All Types</span></div>
+          <div class="ms-dropdown" data-ms="merit">
+            <div class="ms-actions"><button data-action="all">Select All</button><button data-action="none">Clear All</button></div>
+            <div class="ms-options"></div>
+          </div>
+        </div>
+        <div class="filter-group" id="ms-remark-wrap">
+          <label>Prediction</label>
+          <div class="ms-trigger" data-ms="remark"><span class="ms-placeholder">All Predictions</span></div>
+          <div class="ms-dropdown" data-ms="remark">
+            <div class="ms-actions"><button data-action="all">Select All</button><button data-action="none">Clear All</button></div>
+            <div class="ms-options"></div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>Round</label>
+          <select id="f-round">
+            <option value="r1">Round 1 Cutoff</option>
+            <option value="r3">Round 3 Cutoff</option>
+            <option value="spot">Spot Round Cutoff</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Shift</label>
+          <select id="f-shift">
+            <option value="">All Shifts</option>
+            <option value="day">Day Colleges</option>
+            <option value="evening">Evening Colleges</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Sort By</label>
+          <select id="f-sort">
+            <option value="sno">S.No. (Default)</option>
+            <option value="cutoff-desc">Cutoff (High → Low)</option>
+            <option value="cutoff-asc">Cutoff (Low → High)</option>
+            <option value="diff-asc">Difference (Best Chance)</option>
+            <option value="diff-desc">Difference (Hardest)</option>
+            <option value="college">College Name (A→Z)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-cards">
+      <div class="summary-card sc-vsafe">
+        <div class="count" id="cnt-vsafe">0</div>
+        <div class="label">Very Safe</div>
+      </div>
+      <div class="summary-card sc-safe">
+        <div class="count" id="cnt-safe">0</div>
+        <div class="label">Safe</div>
+      </div>
+      <div class="summary-card sc-border">
+        <div class="count" id="cnt-border">0</div>
+        <div class="label">Borderline</div>
+      </div>
+      <div class="summary-card sc-risky">
+        <div class="count" id="cnt-risky">0</div>
+        <div class="label">Risky</div>
+      </div>
+      <div class="summary-card sc-vrisky">
+        <div class="count" id="cnt-vrisky">0</div>
+        <div class="label">Very Risky</div>
+      </div>
+      <div class="summary-card sc-vacant">
+        <div class="count" id="cnt-vacant">0</div>
+        <div class="label">Seat Vacant</div>
+      </div>
+    </div>
+
+    <div class="results-count">Showing <span id="showing-count">0</span> of <span id="total-count">551</span> results</div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>College</th>
+            <th>Course</th>
+            <th>Merit</th>
+            <th>Campus</th>
+            <th>R1 Cutoff</th>
+            <th>R3 Cutoff</th>
+            <th>Spot Cutoff</th>
+            <th>Your Score</th>
+            <th>Diff</th>
+            <th>Prediction</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>Data Source: DU Official Cutoff 2024-25 (UR Category)</p>
+  <p>Built with <span class="heart">❤️</span> for DU Aspirants | CHRONA College Predictor</p>
+</footer>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scroll-top" title="Scroll to top">↑</button>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  // DOM refs
+  const inpP = document.getElementById('inp-physics');
+  const inpC = document.getElementById('inp-chemistry');
+  const inpB = document.getElementById('inp-biology');
+  const inpM = document.getElementById('inp-maths');
+  const inpE = document.getElementById('inp-english');
+  const scoreType1 = document.getElementById('score-type1');
+  const scoreType2 = document.getElementById('score-type2');
+  const scoreType3 = document.getElementById('score-type3');
+  const scoreType4 = document.getElementById('score-type4');
+  const scoreType5 = document.getElementById('score-type5');
+  const scoreType6 = document.getElementById('score-type6');
+  const predictBtn = document.getElementById('predict-btn');
+  const resultsArea = document.getElementById('results-area');
+  const resultsBody = document.getElementById('results-body');
+  const fSearch = document.getElementById('f-search');
+  const fRound = document.getElementById('f-round');
+  const fShift = document.getElementById('f-shift');
+  const fSort = document.getElementById('f-sort');
+  const scrollTopBtn = document.getElementById('scroll-top');
+
+  // ── Multi-Select Component ──
+  class MultiSelect {
+    constructor(wrapId, allOptions, placeholder, onChange) {
+      this.wrap = document.getElementById(wrapId);
+      this.allOptions = allOptions;
+      this.selected = new Set();
+      this.placeholder = placeholder;
+      this.onChange = onChange;
+      this.trigger = this.wrap.querySelector('.ms-trigger');
+      this.dropdown = this.wrap.querySelector('.ms-dropdown');
+      this.optionsContainer = this.dropdown.querySelector('.ms-options');
+      this.searchInput = this.dropdown.querySelector('.ms-search input');
+      this._buildOptions(allOptions);
+      this._bindEvents();
+    }
+    _buildOptions(list) {
+      this.optionsContainer.innerHTML = list.map(v =>
+        `<div class="ms-option${this.selected.has(v) ? ' selected' : ''}" data-val="${this._esc(v)}">
+          <div class="ms-check"></div>
+          <div class="ms-option-label">${this._esc(v)}</div>
+        </div>`
+      ).join('');
+    }
+    _esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    _updateTrigger() {
+      const n = this.selected.size;
+      if (n === 0) {
+        this.trigger.innerHTML = `<span class="ms-placeholder">${this.placeholder}</span>`;
+      } else {
+        const arr = [...this.selected];
+        let html = `<span class="ms-chip">${this._esc(arr[0])}</span>`;
+        if (n === 2) html += `<span class="ms-chip">${this._esc(arr[1])}</span>`;
+        if (n > 2) html += `<span class="ms-chip ms-chip-more">+${n - 1} more</span>`;
+        this.trigger.innerHTML = html;
+      }
+    }
+    _bindEvents() {
+      this.trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.ms-dropdown.open').forEach(d => { if (d !== this.dropdown) d.classList.remove('open'); });
+        document.querySelectorAll('.ms-trigger.active').forEach(t => { if (t !== this.trigger) t.classList.remove('active'); });
+        this.dropdown.classList.toggle('open');
+        this.trigger.classList.toggle('active');
+        if (this.searchInput) { this.searchInput.value = ''; this._buildOptions(this.allOptions); this.searchInput.focus(); }
+      });
+      this.optionsContainer.addEventListener('click', (e) => {
+        const opt = e.target.closest('.ms-option');
+        if (!opt) return;
+        const val = opt.dataset.val;
+        if (this.selected.has(val)) { this.selected.delete(val); opt.classList.remove('selected'); }
+        else { this.selected.add(val); opt.classList.add('selected'); }
+        this._updateTrigger();
+        this.onChange();
+      });
+      if (this.searchInput) {
+        this.searchInput.addEventListener('input', () => {
+          const q = this.searchInput.value.toLowerCase();
+          const filtered = this.allOptions.filter(v => v.toLowerCase().includes(q));
+          this._buildOptions(filtered);
+        });
+      }
+      this.dropdown.querySelectorAll('.ms-actions button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (btn.dataset.action === 'all') {
+            this.allOptions.forEach(v => this.selected.add(v));
+          } else {
+            this.selected.clear();
+          }
+          const q = this.searchInput ? this.searchInput.value.toLowerCase() : '';
+          const filtered = q ? this.allOptions.filter(v => v.toLowerCase().includes(q)) : this.allOptions;
+          this._buildOptions(filtered);
+          this._updateTrigger();
+          this.onChange();
+        });
+      });
+      this.dropdown.addEventListener('click', e => e.stopPropagation());
+    }
+    getSelected() { return this.selected; }
+    reset() { this.selected.clear(); this._updateTrigger(); this._buildOptions(this.allOptions); }
+  }
+
+  // Close all dropdowns on outside click
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.ms-trigger.active').forEach(t => t.classList.remove('active'));
+  });
+
+  // Build option lists from data
+  const courseOptions = [...new Set(CUTOFF_DATA.map(d => d.course))].sort();
+  const collegeOptions = [...new Set(CUTOFF_DATA.map(d => d.college))].sort();
+  const campusOptions = ['North Campus', 'South Campus', 'Off Campus'];
+  const meritOptions = ['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5', 'Type 6'];
+  const remarkOptions = ['Very Safe', 'Safe', 'Borderline', 'Risky', 'Very Risky', 'Seat Vacant'];
+
+  const msCourse = new MultiSelect('ms-course-wrap', courseOptions, 'All Courses', renderResults);
+  const msCollege = new MultiSelect('ms-college-wrap', collegeOptions, 'All Colleges', renderResults);
+  const msCampus = new MultiSelect('ms-campus-wrap', campusOptions, 'All Campuses', renderResults);
+  const msMerit = new MultiSelect('ms-merit-wrap', meritOptions, 'All Types', renderResults);
+  const msRemark = new MultiSelect('ms-remark-wrap', remarkOptions, 'All Predictions', renderResults);
+
+  // Score computation
+  function getVal(inp) { const v = parseFloat(inp.value); return (isNaN(v) || v < 0) ? 0 : Math.min(v, 250); }
+
+  let scores = { 'Type 1': 0, 'Type 2': 0, 'Type 3': 0, 'Type 4': 0, 'Type 5': 0, 'Type 6': 0 };
+
+  function computeScores() {
+    const P = getVal(inpP), C = getVal(inpC), B = getVal(inpB), M = getVal(inpM), E = getVal(inpE);
+    
+    // Helper to get sum of top N from array
+    const sumTop = (arr, n) => arr.sort((a,b) => b-a).slice(0, n).reduce((a,b) => a+b, 0);
+
+    scores['Type 1'] = +(P + C + B).toFixed(2);
+    scores['Type 2'] = +(P + C + Math.max(M, B)).toFixed(2);
+    scores['Type 3'] = +(B + M + Math.max(P, C)).toFixed(2);
+    scores['Type 4'] = +(P + C + M).toFixed(2);
+    scores['Type 5'] = +(E + M + sumTop([P, C, B], 2)).toFixed(2);
+    scores['Type 6'] = +(E + sumTop([P, C, M, B], 3)).toFixed(2);
+    
+    scoreType1.textContent = scores['Type 1'];
+    scoreType2.textContent = scores['Type 2'];
+    scoreType3.textContent = scores['Type 3'];
+    scoreType4.textContent = scores['Type 4'];
+    scoreType5.textContent = scores['Type 5'];
+    scoreType6.textContent = scores['Type 6'];
+  }
+
+  [inpP, inpC, inpB, inpM, inpE].forEach(inp => {
+    inp.addEventListener('input', computeScores);
+  });
+
+  // Remark logic
+  function getRemark(diff) {
+    if (diff === null) return 'Seat Vacant';
+    if (diff < -20) return 'Very Safe';
+    if (diff < -5) return 'Safe';
+    if (diff <= 5) return 'Borderline';
+    if (diff <= 20) return 'Risky';
+    return 'Very Risky';
+  }
+
+  function getRemarkClass(r) {
+    switch(r) {
+      case 'Very Safe': return 'remark-vsafe';
+      case 'Safe': return 'remark-safe';
+      case 'Borderline': return 'remark-border';
+      case 'Risky': return 'remark-risky';
+      case 'Very Risky': return 'remark-vrisky';
+      default: return 'remark-vacant';
+    }
+  }
+
+  function getDiffClass(diff) {
+    if (diff === null) return 'diff-vacant';
+    if (diff < 0) return 'diff-negative';
+    if (diff > 0) return 'diff-positive';
+    return 'diff-zero';
+  }
+
+  function getCampusBadge(campus) {
+    if (campus === 'North Campus') return '<span class="badge-campus badge-north">North</span>';
+    if (campus === 'South Campus') return '<span class="badge-campus badge-south">South</span>';
+    return '<span class="badge-campus badge-off">Off</span>';
+  }
+
+  function getMeritBadge(merit) {
+    const safeMerit = merit.replace(/\s+/g, '');
+    return `<span class="badge-merit merit-${safeMerit}">${merit}</span>`;
+  }
+
+  function getCutoffForRound(entry, round) {
+    if (round === 'r1') return entry.r1_cutoff;
+    if (round === 'r3') return entry.r3_cutoff;
+    return entry.spot_cutoff;
+  }
+
+  // Render results
+  let predicted = false;
+
+  function renderResults() {
+    if (!predicted) return;
+    const round = fRound.value;
+    const filterShift = fShift.value;
+    const searchTerm = fSearch.value.toLowerCase().trim();
+    const selCourses = msCourse.getSelected();
+    const selColleges = msCollege.getSelected();
+    const selCampuses = msCampus.getSelected();
+    const selMerits = msMerit.getSelected();
+    const selRemarks = msRemark.getSelected();
+    const sortBy = fSort.value;
+
+    // Build enriched data
+    let data = CUTOFF_DATA.map(entry => {
+      const myScore = scores[entry.merit] || 0;
+      const cutoff = getCutoffForRound(entry, round);
+      const diff = cutoff !== null ? +(cutoff - myScore).toFixed(2) : null;
+      const remark = getRemark(diff);
+      return { ...entry, myScore, cutoff, diff, remark };
+    });
+
+    // Apply filters (empty set = show all)
+    if (searchTerm) {
+      data = data.filter(d => d.college.toLowerCase().includes(searchTerm) || d.course.toLowerCase().includes(searchTerm));
+    }
+    if (filterShift === 'evening') data = data.filter(d => d.is_evening);
+    if (filterShift === 'day') data = data.filter(d => !d.is_evening);
+    
+    if (selCourses.size > 0) data = data.filter(d => selCourses.has(d.course));
+    if (selColleges.size > 0) data = data.filter(d => selColleges.has(d.college));
+    if (selCampuses.size > 0) data = data.filter(d => selCampuses.has(d.campus));
+    if (selMerits.size > 0) data = data.filter(d => selMerits.has(d.merit));
+    if (selRemarks.size > 0) data = data.filter(d => selRemarks.has(d.remark));
+
+    // Sort
+    switch(sortBy) {
+      case 'cutoff-desc': data.sort((a, b) => (b.cutoff || 0) - (a.cutoff || 0)); break;
+      case 'cutoff-asc': data.sort((a, b) => (a.cutoff || 9999) - (b.cutoff || 9999)); break;
+      case 'diff-asc': data.sort((a, b) => (a.diff === null ? 9999 : a.diff) - (b.diff === null ? 9999 : b.diff)); break;
+      case 'diff-desc': data.sort((a, b) => (b.diff === null ? -9999 : b.diff) - (a.diff === null ? -9999 : a.diff)); break;
+      case 'college': data.sort((a, b) => a.college.localeCompare(b.college)); break;
+      default: data.sort((a, b) => a.sno - b.sno);
+    }
+
+    // Update summary counts
+    const counts = { 'Very Safe': 0, 'Safe': 0, 'Borderline': 0, 'Risky': 0, 'Very Risky': 0, 'Seat Vacant': 0 };
+    data.forEach(d => { counts[d.remark] = (counts[d.remark] || 0) + 1; });
+    document.getElementById('cnt-vsafe').textContent = counts['Very Safe'];
+    document.getElementById('cnt-safe').textContent = counts['Safe'];
+    document.getElementById('cnt-border').textContent = counts['Borderline'];
+    document.getElementById('cnt-risky').textContent = counts['Risky'];
+    document.getElementById('cnt-vrisky').textContent = counts['Very Risky'];
+    document.getElementById('cnt-vacant').textContent = counts['Seat Vacant'];
+    document.getElementById('showing-count').textContent = data.length;
+    document.getElementById('total-count').textContent = CUTOFF_DATA.length;
+
+    // Build HTML
+    let html = '';
+    data.forEach((d, i) => {
+      const r1Str = d.r1_cutoff !== null ? d.r1_cutoff.toFixed(2) : '—';
+      const r3Str = d.r3_cutoff !== null ? d.r3_cutoff.toFixed(2) : '—';
+      const spotStr = d.spot_cutoff !== null ? d.spot_cutoff.toFixed(2) : '—';
+      const diffStr = d.diff !== null ? (d.diff > 0 ? '+' : '') + d.diff.toFixed(2) : '—';
+      html += `<tr>
+        <td>${i + 1}</td>
+        <td class="col-college">${d.college}</td>
+        <td class="col-course">${d.course}</td>
+        <td class="col-num">${getMeritBadge(d.merit)}</td>
+        <td>${getCampusBadge(d.campus)}</td>
+        <td class="col-num">${r1Str}</td>
+        <td class="col-num">${r3Str}</td>
+        <td class="col-num">${spotStr}</td>
+        <td class="col-num" style="font-weight:700;color:#60a5fa">${d.myScore.toFixed(2)}</td>
+        <td class="col-num ${getDiffClass(d.diff)}">${diffStr}</td>
+        <td><span class="badge-remark ${getRemarkClass(d.remark)}">${d.remark}</span></td>
+      </tr>`;
+    });
+    resultsBody.innerHTML = html;
+  }
+
+  // Predict button
+  predictBtn.addEventListener('click', () => {
+    computeScores();
+    predicted = true;
+    resultsArea.classList.add('visible');
+    renderResults();
+    setTimeout(() => {
+      resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  });
+
+  // Filter listeners for single-selects and search
+  [fSearch, fRound, fShift, fSort].forEach(el => {
+    el.addEventListener('input', renderResults);
+    el.addEventListener('change', renderResults);
+  });
+
+  // Scroll to top button
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+  });
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>
