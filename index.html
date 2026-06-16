@@ -41,8 +41,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--tex
 .input-card:hover{border-color:rgba(99,102,241,0.4);transform:translateY(-2px);box-shadow:0 8px 32px rgba(99,102,241,0.1)}
 .input-card label{display:block;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:8px}
 .input-card .subject-icon{font-size:1.5rem;margin-bottom:6px}
-.input-card input{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:12px;font-size:1.3rem;font-weight:700;color:var(--text-primary);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:border 0.3s}
-.input-card input:focus{border-color:var(--accent-blue);box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+.input-card input, .input-card select{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:12px;font-size:1.3rem;font-weight:700;color:var(--text-primary);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:border 0.3s;appearance:none;cursor:pointer}
+.input-card input:focus, .input-card select:focus{border-color:var(--accent-blue);box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+.input-card select option {background: var(--bg-secondary); color: var(--text-primary); font-size:1rem;}
 .input-card input::placeholder{color:var(--text-muted);font-weight:400;font-size:0.9rem}
 .input-card .max-label{font-size:0.7rem;color:var(--text-muted);margin-top:6px}
 
@@ -249,6 +250,19 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
       <input type="number" id="inp-english" min="0" max="250" step="0.01" placeholder="0.00">
       <div class="max-label">Max: 250</div>
     </div>
+    <div class="input-card">
+      <div class="subject-icon">🏷️</div>
+      <label>Category</label>
+      <select id="inp-category">
+        <option value="UR" selected>UR (General)</option>
+        <option value="OBC">OBC</option>
+        <option value="SC">SC</option>
+        <option value="ST">ST</option>
+        <option value="EWS">EWS</option>
+        <option value="PwBD">PwBD</option>
+      </select>
+      <div class="max-label">Select Your Category</div>
+    </div>
   </div>
 
   <div class="computed-scores">
@@ -444,6 +458,7 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
   const inpB = document.getElementById('inp-biology');
   const inpM = document.getElementById('inp-maths');
   const inpE = document.getElementById('inp-english');
+  const inpCategory = document.getElementById('inp-category');
   const scoreType1 = document.getElementById('score-type1');
   const scoreType2 = document.getElementById('score-type2');
   const scoreType3 = document.getElementById('score-type3');
@@ -589,6 +604,7 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
   [inpP, inpC, inpB, inpM, inpE].forEach(inp => {
     inp.addEventListener('input', computeScores);
   });
+  inpCategory.addEventListener('change', renderResults);
 
   // Remark logic
   function getRemark(diff) {
@@ -630,9 +646,9 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
   }
 
   function getCutoffForRound(entry, round) {
-    if (round === 'r1') return entry.r1_cutoff;
-    if (round === 'r3') return entry.r3_cutoff;
-    return entry.spot_cutoff;
+    const cat = inpCategory.value;
+    if (!entry.cutoffs || !entry.cutoffs[cat]) return null;
+    return entry.cutoffs[cat][round];
   }
 
   // Render results
