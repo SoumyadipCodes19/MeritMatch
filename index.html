@@ -752,9 +752,9 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
     let html = '';
     data.forEach((d, i) => {
       const cat = inpCategory.value;
-      const c_r1 = (d.cutoffs && d.cutoffs[cat]) ? d.cutoffs[cat].r1 : null;
-      const c_r3 = (d.cutoffs && d.cutoffs[cat]) ? d.cutoffs[cat].r3 : null;
-      const c_spot = (d.cutoffs && d.cutoffs[cat]) ? d.cutoffs[cat].spot : null;
+      const c_r1 = (d.cutoffs && d.cutoffs.r1 && d.cutoffs.r1[cat] !== undefined) ? d.cutoffs.r1[cat] : null;
+      const c_r3 = (d.cutoffs && d.cutoffs.r3 && d.cutoffs.r3[cat] !== undefined) ? d.cutoffs.r3[cat] : null;
+      const c_spot = (d.cutoffs && d.cutoffs.spot && d.cutoffs.spot[cat] !== undefined) ? d.cutoffs.spot[cat] : null;
       const r1Str = c_r1 !== null ? c_r1.toFixed(2) : '-';
       const r3Str = c_r3 !== null ? c_r3.toFixed(2) : '-';
       const spotStr = c_spot !== null ? c_spot.toFixed(2) : '-';
