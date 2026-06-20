@@ -323,6 +323,15 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
             <div class="ms-options"></div>
           </div>
         </div>
+        <div class="filter-group" id="ms-basubject-wrap">
+          <label>B.A. Subjects</label>
+          <div class="ms-trigger" data-ms="basubject"><span class="ms-placeholder">Any B.A. Subject</span></div>
+          <div class="ms-dropdown" data-ms="basubject">
+            <div class="ms-search"><input type="text" placeholder="Search subjects..."></div>
+            <div class="ms-actions"><button data-action="all">Select All</button><button data-action="none">Clear All</button></div>
+            <div class="ms-options"></div>
+          </div>
+        </div>
         <div class="filter-group" id="ms-college-wrap">
           <label>College</label>
           <div class="ms-trigger" data-ms="college"><span class="ms-placeholder">All Colleges</span></div>
@@ -569,7 +578,24 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
   const meritOptions = ['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5', 'Type 6'];
   const remarkOptions = ['Very Safe', 'Safe', 'Borderline', 'Risky', 'Very Risky', 'Seat Vacant'];
 
+  const baSubjectsSet = new Set();
+  CUTOFF_DATA.forEach(d => {
+    if (d.course.includes('B.A. Program') || d.course.includes('B.A Program')) {
+      const match = d.course.match(/\((.*?)\)/);
+      if (match) {
+        match[1].split('+').forEach(s => {
+          const clean = s.trim();
+          if (!clean.includes('Any') && clean.length > 0 && clean.length < 40) {
+            baSubjectsSet.add(clean);
+          }
+        });
+      }
+    }
+  });
+  const baSubjectsOptions = [...baSubjectsSet].sort();
+
   const msCourse = new MultiSelect('ms-course-wrap', courseOptions, 'All Courses', renderResults);
+  const msBaSubject = new MultiSelect('ms-basubject-wrap', baSubjectsOptions, 'Any B.A. Subject', renderResults);
   const msCollege = new MultiSelect('ms-college-wrap', collegeOptions, 'All Colleges', renderResults);
   const msCampus = new MultiSelect('ms-campus-wrap', campusOptions, 'All Campuses', renderResults);
   const msMerit = new MultiSelect('ms-merit-wrap', meritOptions, 'All Types', renderResults);
@@ -660,6 +686,7 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
     const filterShift = fShift.value;
     const searchTerm = fSearch.value.toLowerCase().trim();
     const selCourses = msCourse.getSelected();
+    const selBaSubjects = msBaSubject.getSelected();
     const selColleges = msCollege.getSelected();
     const selCampuses = msCampus.getSelected();
     const selMerits = msMerit.getSelected();
@@ -683,6 +710,17 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
     if (filterShift === 'day') data = data.filter(d => !d.is_evening);
     
     if (selCourses.size > 0) data = data.filter(d => selCourses.has(d.course));
+    
+    if (selBaSubjects.size > 0) {
+      data = data.filter(d => {
+        if (!d.course.includes('B.A. Program') && !d.course.includes('B.A Program')) return false;
+        for (let sub of selBaSubjects) {
+          if (d.course.includes(sub)) return true;
+        }
+        return false;
+      });
+    }
+
     if (selColleges.size > 0) data = data.filter(d => selColleges.has(d.college));
     if (selCampuses.size > 0) data = data.filter(d => selCampuses.has(d.campus));
     if (selMerits.size > 0) data = data.filter(d => selMerits.has(d.merit));
