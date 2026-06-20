@@ -673,8 +673,8 @@ tbody td:first-child{text-align:center;font-weight:600;color:var(--text-muted);f
 
   function getCutoffForRound(entry, round) {
     const cat = inpCategory.value;
-    if (!entry.cutoffs || !entry.cutoffs[cat]) return null;
-    return entry.cutoffs[cat][round];
+    if (!entry.cutoffs || !entry.cutoffs[round] || entry.cutoffs[round][cat] === null || entry.cutoffs[round][cat] === undefined) return null;
+    return entry.cutoffs[round][cat];
   }
 
   // Render results
